@@ -1,0 +1,16 @@
+[
+	{
+		"subreddit": "sandbox",
+		"username": "reddit-poster",
+		"password": "example",
+		"title": "Test Submission 1",
+		"text": "This is a test submission."
+	},
+	{
+		"subreddit": "sandbox",
+		"username": "reddit-poster",
+		"password": "example",
+		"title": "Test Submission 2",
+		"text": "This is another test submission."
+	}
+]
