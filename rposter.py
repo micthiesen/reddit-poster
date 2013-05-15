@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Automatically posts recurring threads to reddit
 # Author: /u/MasterMic
@@ -7,7 +7,10 @@
 # Imports
 import json
 import praw
+import time
 
+# Constants
+RETRY_WAIT_TIME = 10  # Number of seconds to wait before retrying to submit an submission
 
 # Global varibales
 submissions = []
@@ -23,10 +26,18 @@ class Submission(object):
         self.text = text
 
     def submit(self):
-        r = praw.Reddit(user_agent="reddit-poster")
-        r.login(self.username, self.password)
-        r.submit(self.subreddit, self.title, text=self.text)
-        print("[ INFO ] Submitted submission titled \"" + self.title + "\"")
+        try:
+            r = praw.Reddit(user_agent="reddit-poster")
+            r.login(self.username, self.password)
+            r.submit(self.subreddit, self.title, text=self.text
+                     + "\n\n===\nPosted by reddit-poster")
+            print("[ INFO ] Submitted submission titled \"" + self.title + "\"")
+        except praw.errors.APIException as e:
+            print(str(e))
+            print("[ ERROR ] Submission of submission titled \"" + self.title
+                  + "\" failed, trying again in " + str(RETRY_WAIT_TIME) + " seconds")
+            time.sleep(RETRY_WAIT_TIME)
+            self.submit()
 
 
 # This method is used when rposter.py is invoked from the command line
@@ -42,6 +53,8 @@ def main():
                                   s["title"], s["text"])
         submissions.append(a_submission)
         print("[ INFO ] Parsed submission titled \"" + s["title"] + "\"")
+
+    submissions[1].submit()
 
 
 # Call main() when rposter.py is invoked from the command line
