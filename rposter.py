@@ -26,6 +26,7 @@ class Submission(object):
         self.title = title
         self.text = text
         self.time = time
+        self.minutes = get_minutes(time.day, time.hour, time.minute)
 
     def submit(self):
         try:
@@ -44,12 +45,11 @@ class Submission(object):
     def in_interval(self, lower, upper):
         lower_minutes = get_minutes(lower.tm_wday, lower.tm_hour, lower.tm_min)
         upper_minutes = get_minutes(upper.tm_wday, upper.tm_hour, upper.tm_min)
-        sub_minutes = get_minutes(self.time.day, self.time.hour, self.time.minute)
 
         if lower_minutes <= upper_minutes:
-            return sub_minutes > lower_minutes and sub_minutes <= upper_minutes
+            return self.minutes > lower_minutes and self.minutes <= upper_minutes
         else:
-            return sub_minutes > lower_minutes or sub_minutes <= upper_minutes
+            return self.minutes > lower_minutes or self.minutes <= upper_minutes
 
     def to_string(self):
         return "\"" + self.title + "\" to be run every " + self.time.to_string()
