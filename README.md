@@ -11,6 +11,33 @@ A bot that automatically posts recurring weekly threads to reddit using an easy 
 ## Configuration File
 There is an example config.json included in the repository which shows the format of the file. More submission objects can be created; just make sure they are separated by a comma. The bot will let you know if the is an error parsing your configuration file.
 
+### subreddit
+The subreddit in which to post this particular submission.
+
+### username
+The username to use to post this submission.
+
+### password
+The password for the aforementioned username.
+
+### title
+The title of the submission.
+
+### text
+The text of the submission. Note that a small credit notice is appended to all submissions. If you don't like it, feel free to remove it (you'll have to dig around in rposter.py).
+
+### time
+The recurring time of the week to post this submission.
+
+#### day
+The day of the week where 0 is Monday, 1 is Tuesday, 2 is Wednesday, 3 is Thursday, 4 is Friday, 5 is Saturday, and 6 is Sunday.
+
+#### hour
+The hour, a value from 0 to 23.
+
+#### minute
+The minute, a value from 0 to 59.
+
 ## More Configuration
 By default, the bot checks for submissions to post every 10 seconds. This value can be changed by editing the `CHECK_INTERVAL` global variable found in rposter.py.
 
