@@ -26,15 +26,16 @@ class Submission(object):
         self.title = title
         self.text = text
         self.time = time
-        self.minutes = get_minutes(time.day, time.hour, time.minute)
 
     def submit(self):
         try:
             r = praw.Reddit(user_agent="reddit-poster")
             r.login(self.username, self.password)
-            r.submit(self.subreddit, self.title, text=self.text
-                     + "\n\n\n===\nPosted by reddit-poster")
-            print("[ INFO ] Submitted submission titled \"" + self.title + "\"")
+            submission = r.submit(self.subreddit, self.title, text=self.text
+                     + "\n\n---\nAutomatically posted by "
+                     + "[reddit-poster](https://github.com/MasterMic/reddit-poster)")
+            print("[ INFO ] Submitted submission titled \"" + self.title + "\" at "
+                  + submission.short_link)
         except praw.errors.APIException as e:
             print("[ ERROR ] Submission of submission titled \"" + self.title
                   + "\" failed, trying again in " + str(RETRY_WAIT_TIME) + " seconds:")
@@ -43,13 +44,14 @@ class Submission(object):
             self.submit()
 
     def in_interval(self, lower, upper):
-        lower_minutes = get_minutes(lower.tm_wday, lower.tm_hour, lower.tm_min)
-        upper_minutes = get_minutes(upper.tm_wday, upper.tm_hour, upper.tm_min)
+        lower_minutes = lower.get_minutes()
+        upper_minutes = upper.get_minutes()
+        minutes = self.time.get_minutes()
 
         if lower_minutes <= upper_minutes:
-            return self.minutes > lower_minutes and self.minutes <= upper_minutes
+            return minutes > lower_minutes and minutes <= upper_minutes
         else:
-            return self.minutes > lower_minutes or self.minutes <= upper_minutes
+            return minutes > lower_minutes or minutes <= upper_minutes
 
     def to_string(self):
         return "\"" + self.title + "\" to be run every " + self.time.to_string()
@@ -76,12 +78,19 @@ class Time(object):
         self.hour = hour
         self.minute = minute
 
+    def get_minutes(self):
+        return (self.day * 1440) + (self.hour * 60) + self.minute
+
     def to_string(self):
-        return WEEKDAYS[self.day] + " at " + str(self.hour) + ":" + str(self.minute)
+        hour_str = str(self.hour)
+        if self.hour < 10:
+            hour_str = "0" + hour_str
 
+        minute_str = str(self.minute)
+        if self.minute < 10:
+            minute_str = "0" + minute_str
 
-def get_minutes(day, hour, minute):
-    return (day * 1440) + (hour * 60) + minute
+        return WEEKDAYS[self.day] + " at " + hour_str + ":" + minute_str
 
 
 # This method is used when rposter.py is invoked from the command line
@@ -107,12 +116,13 @@ def main():
     # Queue the submissions to be submitted at the appropriate time
     # We assume all submissions prior to this time have been submitted
     # We also assume that all time intervals last less than one week
-    prev_time = time.localtime()
+    sys_time = time.localtime()
+    prev_time = Time(sys_time.tm_wday, sys_time.tm_hour, sys_time.tm_min)
     while True:
-        curr_time = time.localtime()
+        sys_time = time.localtime()
+        curr_time = Time(sys_time.tm_wday, sys_time.tm_hour, sys_time.tm_min)
         print("[ INFO ] Checking for submissions to submit (current time "
-              + str(curr_time.tm_hour) + ":" + str(curr_time.tm_min) + ":"
-              + str(curr_time.tm_sec) + ")")
+              + curr_time.to_string() + ")")
 
         for s in submissions:
             if s.in_interval(prev_time, curr_time):
