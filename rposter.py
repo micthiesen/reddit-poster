@@ -65,12 +65,8 @@ class TopicSubmission(Submission):
         self.topics = topics
 
     def submit(self):
-        # First get the topic
-
-        self.submit_text = self.text + "\n\nToday's topic: STUB!!!"
-
-        # Now submit it as normal
-        super(TopicSubmission).submit()
+        self.submit_text = self.text + "\n\n**Today's topic:** " + self.topics.pop_topic()
+        super(TopicSubmission, self).submit()
 
 
 # A text file containing a list of topics for a TopicSubmission
@@ -78,6 +74,22 @@ class TopicList(object):
     def __init__(self, location):
         self.location = location
 
+    def pop_topic(self):
+        fr = open(self.location)
+        lines = [l.strip() for l in fr.readlines()]
+        head = lines[0]
+        fr.close()
+
+        print(lines)
+        print("Got the head: " + head)
+
+        fw = open(self.location, "w")
+        for i in range(1, len(lines)):
+            fw.write(lines[i] + "\n")
+            print("Writing: " + lines[i])
+        fw.close()
+
+        return head
 
 # A time object (immutable)
 class Time(object):
@@ -141,7 +153,7 @@ def main():
 
             submissions.append(a_submission)
         except KeyError as e:
-            print("[ ERROR ] The key " + str(e) + " could not be found for a submission, "
+            print("[ ERROR ] The key " + str(e) + " could not be found for a submission: "
                   + "check your config.json file")
             exit(1)
 
