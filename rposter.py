@@ -19,7 +19,7 @@ WEEKDAYS = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday", 4: "Friday
 
 # A submission
 class Submission(object):
-    def __init__(self, subreddit, username, password, title, text, time):
+    def __init__(self, subreddit, username, password, title, text, time, date):
         self.subreddit = subreddit
         self.username = username
         self.password = password
@@ -29,10 +29,14 @@ class Submission(object):
         self.submit_text = text
 
     def submit(self):
+        submit_title = self.title
+        if date:
+            submit_title += time.strftime(" - %b. %d")
+
         try:
             r = praw.Reddit(user_agent="reddit-poster")
             r.login(self.username, self.password)
-            submission = r.submit(self.subreddit, self.title, text=self.submit_text
+            submission = r.submit(self.subreddit, submit_title, text=self.submit_text
                      + "\n\n---\nAutomatically posted by "
                      + "[reddit-poster](https://github.com/MasterMic/reddit-poster)")
             print("[ INFO ] Submitted submission titled \"" + self.title + "\" at "
@@ -60,8 +64,8 @@ class Submission(object):
 
 # A submission with a list of topics
 class TopicSubmission(Submission):
-    def __init__(self, subreddit, username, password, title, text, time, topics):
-        super(TopicSubmission, self).__init__(subreddit, username, password, title, text, time)
+    def __init__(self, subreddit, username, password, title, text, time, date, topics):
+        super(TopicSubmission, self).__init__(subreddit, username, password, title, text, time, date)
         self.topics = topics
 
     def submit(self):
@@ -140,11 +144,11 @@ def main():
             try:
                 topics = TopicList(s["topics"])
                 a_submission = TopicSubmission(s["subreddit"], s["username"], s["password"],
-                                               s["title"], s["text"], a_time, topics)
+                                               s["title"], s["text"], a_time, s["date"], topics)
                 print("[ INFO ] Parsed a topic submission titled " + a_submission.to_string())
             except KeyError:
                 a_submission = Submission(s["subreddit"], s["username"], s["password"],
-                                          s["title"], s["text"], a_time)
+                                          s["title"], s["text"], a_time, s["date"])
                 print("[ INFO ] Parsed a submission titled " + a_submission.to_string())
 
             submissions.append(a_submission)
