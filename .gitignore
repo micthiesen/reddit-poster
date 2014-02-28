@@ -1,3 +1,6 @@
+# Config file
+config.json
+
 *.py[cod]
 
 # C extensions
