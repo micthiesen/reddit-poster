@@ -26,6 +26,9 @@ The title of the submission.
 ### text
 The text of the submission. Note that a small credit notice is appended to all submissions. If you don't like it, feel free to remove it (you'll have to dig around in rposter.py).
 
+### date
+Either true or false. If true, the current date will be appended to the title of the submission.
+
 ### time
 The recurring time of the week to post this submission.
 
@@ -37,6 +40,9 @@ The hour, a value from 0 to 23.
 
 #### minute
 The minute, a value from 0 to 59.
+
+### topics (optional)
+The location of a text file containing weekly topics. The text file should contain one topic per line. Each time the submission is submitted, reddit-poster will pop the top topic from the text file (and delete it) and use it in the submission.
 
 ## More Configuration
 By default, the bot checks for submissions to post every 30 seconds. This value can be changed by editing the `CHECK_INTERVAL` global variable found in rposter.py.

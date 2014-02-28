@@ -26,11 +26,12 @@ class Submission(object):
         self.title = title
         self.text = text
         self.time = time
+        self.date = date
         self.submit_text = text
 
     def submit(self):
         submit_title = self.title
-        if date:
+        if self.date:
             submit_title += time.strftime(" - %b. %d")
 
         try:
