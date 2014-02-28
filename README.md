@@ -39,9 +39,9 @@ The hour, a value from 0 to 23.
 The minute, a value from 0 to 59.
 
 ## More Configuration
-By default, the bot checks for submissions to post every 10 seconds. This value can be changed by editing the `CHECK_INTERVAL` global variable found in rposter.py.
+By default, the bot checks for submissions to post every 30 seconds. This value can be changed by editing the `CHECK_INTERVAL` global variable found in rposter.py.
 
-Similarly, if posting a submission fails, the bot tries again in 10 seconds. This value can be changed by editing the `RETRY_WAIT_TIME` global variable found in rposter.py.
+Similarly, if posting a submission fails, the bot tries again in 30 seconds. This value can be changed by editing the `RETRY_WAIT_TIME` global variable found in rposter.py.
 
 ## Common Issues
 If the account you use to post submissions is new or does not have much karma, you will be forced to type a captcha when the bot submits a submission. The bot will be paused until the captcha is entered. Sometimes, if you post too frequently, you will be barred from posting at all.

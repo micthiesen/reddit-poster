@@ -11,8 +11,8 @@ import time
 
 
 # Constants
-CHECK_INTERVAL = 10  # Number of seconds to wait between checking for submissions to post
-RETRY_WAIT_TIME = 10  # Number of seconds to wait before retrying to submit an submission
+CHECK_INTERVAL = 30  # Number of seconds to wait between checking for submissions to post
+RETRY_WAIT_TIME = 30  # Number of seconds to wait before retrying to submit an submission
 WEEKDAYS = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday", 4: "Friday",
             5: "Saturday", 6: "Sunday"}
 
