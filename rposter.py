@@ -80,13 +80,9 @@ class TopicList(object):
         head = lines[0]
         fr.close()
 
-        print(lines)
-        print("Got the head: " + head)
-
         fw = open(self.location, "w")
         for i in range(1, len(lines)):
             fw.write(lines[i] + "\n")
-            print("Writing: " + lines[i])
         fw.close()
 
         return head
