@@ -68,9 +68,15 @@ class TopicSubmission(Submission):
         # First get the topic
 
         self.submit_text = self.text + "\n\nToday's topic: STUB!!!"
-        
+
         # Now submit it as normal
         super(TopicSubmission).submit()
+
+
+# A text file containing a list of topics for a TopicSubmission
+class TopicList(object):
+    def __init__(self, location):
+        self.location = location
 
 
 # A time object (immutable)
@@ -121,10 +127,19 @@ def main():
         try:
             a_time = Time(s["time"]["day"], s["time"]["hour"], s["time"]["minute"])
             validate_time(a_time)
-            a_submission = Submission(s["subreddit"], s["username"], s["password"],
-                                      s["title"], s["text"], a_time)
+
+            # Either create a TopicSubmission or Submission
+            try:
+                topics = TopicList(s["topics"])
+                a_submission = TopicSubmission(s["subreddit"], s["username"], s["password"],
+                                               s["title"], s["text"], a_time, topics)
+                print("[ INFO ] Parsed a topic submission titled " + a_submission.to_string())
+            except KeyError:
+                a_submission = Submission(s["subreddit"], s["username"], s["password"],
+                                          s["title"], s["text"], a_time)
+                print("[ INFO ] Parsed a submission titled " + a_submission.to_string())
+
             submissions.append(a_submission)
-            print("[ INFO ] Parsed submission titled " + a_submission.to_string())
         except KeyError as e:
             print("[ ERROR ] The key " + str(e) + " could not be found for a submission, "
                   + "check your config.json file")
