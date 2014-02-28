@@ -26,12 +26,13 @@ class Submission(object):
         self.title = title
         self.text = text
         self.time = time
+        self.submit_text = text
 
     def submit(self):
         try:
             r = praw.Reddit(user_agent="reddit-poster")
             r.login(self.username, self.password)
-            submission = r.submit(self.subreddit, self.title, text=self.text
+            submission = r.submit(self.subreddit, self.title, text=self.submit_text
                      + "\n\n---\nAutomatically posted by "
                      + "[reddit-poster](https://github.com/MasterMic/reddit-poster)")
             print("[ INFO ] Submitted submission titled \"" + self.title + "\" at "
@@ -44,9 +45,9 @@ class Submission(object):
             self.submit()
 
     def in_interval(self, lower, upper):
-        lower_minutes = lower.get_minutes()
-        upper_minutes = upper.get_minutes()
-        minutes = self.time.get_minutes()
+        lower_minutes = lower.total_minutes
+        upper_minutes = upper.total_minutes
+        minutes = self.time.total_minutes
 
         if lower_minutes <= upper_minutes:
             return minutes > lower_minutes and minutes <= upper_minutes
@@ -57,29 +58,28 @@ class Submission(object):
         return "\"" + self.title + "\" to be run every " + self.time.to_string()
 
 
-# A time object
+# A submission with a list of topics
+class TopicSubmission(Submission):
+    def __init__(self, subreddit, username, password, title, text, time, topics):
+        super(TopicSubmission, self).__init__(subreddit, username, password, title, text, time)
+        self.topics = topics
+
+    def submit(self):
+        # First get the topic
+
+        self.submit_text = self.text + "\n\nToday's topic: STUB!!!"
+        
+        # Now submit it as normal
+        super(TopicSubmission).submit()
+
+
+# A time object (immutable)
 class Time(object):
     def __init__(self, day, hour, minute):
-        # Ensure the time format is correct
-        if day < 0 or day > 6:
-            print("[ ERROR ] 'day' must be an integer ranging from 0 to 6, "
-                  + "check your config.json file")
-            exit(1)
-        if (hour < 0 or hour > 23):
-            print("[ ERROR ] 'hour' must be an integer ranging from 0 to 23, "
-                  + "check your config.json file")
-            exit(1)
-        if (minute < 0 or minute > 59):
-            print("[ ERROR ] 'minute' must be an integer ranging from 0 to 59, "
-                  + "check your config.json file")
-            exit(1)
-
         self.day = day
         self.hour = hour
         self.minute = minute
-
-    def get_minutes(self):
-        return (self.day * 1440) + (self.hour * 60) + self.minute
+        self.total_minutes = (self.day * 1440) + (self.hour * 60) + self.minute
 
     def to_string(self):
         hour_str = str(self.hour)
@@ -93,6 +93,22 @@ class Time(object):
         return WEEKDAYS[self.day] + " at " + hour_str + ":" + minute_str
 
 
+# Ensures the time format is correct
+def validate_time(time):
+    if time.day < 0 or time.day > 6:
+        print("[ ERROR ] 'day' must be an integer ranging from 0 to 6, "
+              + "check your config.json file")
+        exit(1)
+    if (time.hour < 0 or time.hour > 23):
+        print("[ ERROR ] 'hour' must be an integer ranging from 0 to 23, "
+              + "check your config.json file")
+        exit(1)
+    if (time.minute < 0 or time.minute > 59):
+        print("[ ERROR ] 'minute' must be an integer ranging from 0 to 59, "
+              + "check your config.json file")
+        exit(1)
+
+
 # This method is used when rposter.py is invoked from the command line
 def main():
     # Load the config file
@@ -104,6 +120,7 @@ def main():
     for s in data:
         try:
             a_time = Time(s["time"]["day"], s["time"]["hour"], s["time"]["minute"])
+            validate_time(a_time)
             a_submission = Submission(s["subreddit"], s["username"], s["password"],
                                       s["title"], s["text"], a_time)
             submissions.append(a_submission)
