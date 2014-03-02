@@ -2,7 +2,7 @@
 A bot that automatically posts recurring weekly threads to reddit using an easy to configure JSON file. If you are a subreddit moderator, this could be useful for you!
 
 ## Installation
-1. Make sure you have [Python](http://www.python.org/download/) installed (Python 2.7.4 works best).
+1. Make sure you have [Python](http://www.python.org/download/) installed (Python 2.7.X works best).
 2. Install [PRAW](https://github.com/praw-dev/praw), a python reddit API wrapper. reddit-poster depends on this.
 3. Download reddit-poster using the ZIP button above. Extract the contents to a folder of your choosing. (Alternatively, you can simply clone this repository.)
 4. Configure a settings file, named config.json, to your liking. A sample file (config.json.sample) is provided (see the next section for details).
