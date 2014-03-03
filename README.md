@@ -5,11 +5,11 @@ A bot that automatically posts recurring weekly threads to reddit using an easy 
 1. Make sure you have [Python](http://www.python.org/download/) installed (Python 2.7.X works best).
 2. Install [PRAW](https://github.com/praw-dev/praw), a python reddit API wrapper. reddit-poster depends on this.
 3. Download reddit-poster using the ZIP button above. Extract the contents to a folder of your choosing. (Alternatively, you can simply clone this repository.)
-4. Configure a settings file, named config.json, to your liking. A sample file (config.json.sample) is provided (see the next section for details).
+4. Configure a settings file, named config.json, to your liking. An example file (config.json.example) is provided (see the next section for details).
 5. Run the bot by executing `python rposter.py` in a terminal or command line while in the folder containing rposter.py. If you change the contents of config.json, the bot will need to be restarted.
 
 ## Configuration File
-There is an example config.json.sample included in the repository which shows the format of the file. Feel free to rename it config.json and use it as your configuration file. More submission objects can be created; just make sure they are separated by a comma. The bot will let you know if the is an error parsing your configuration file.
+There is an example config.json.example included in the repository which shows the format of the file. Feel free to rename it config.json and use it as your configuration file. More submission objects can be created; just make sure they are separated by a comma. The bot will let you know if the is an error parsing your configuration file.
 
 ### subreddit
 The subreddit in which to post this particular submission.
